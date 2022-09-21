@@ -1,12 +1,13 @@
-/**Jobster app - version 1 - Components > index js - Features:
+/**Jobster app - version 2 - Components > index js - Features:
  * 
- *    --> Importing and exporting first component
- *        'Logo' Component. 
+ *    --> Importing and exporting second component
+ *        'FormRow' Component. 
  * 
- * Note: this index will simplified the way that i
- * import make in it easy as i create new Components
+ * Note: this component is created to applied the style
+ * to every basic form row that i will build in the app
  */
 
 import Logo from "./Logo";
+import FormRow from "./FormRow";
 
-export { Logo }
+export { Logo, FormRow }
