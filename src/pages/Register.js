@@ -2,20 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Logo, FormRow } from "../components";
 import Wrapper from '../assets/wrappers/RegisterPage';
 
-/**Jobster app - version 1 - Register Page - Features:
+/**Jobster app - version 2 - Register Page - Features:
  * 
- *    --> Building 'Register' page.
- * 
- *    --> Building 'initialState' to handle 
- *        the initial values props of 
- *       'FormRow'.
- * 
- *    --> Importing and placing 'Logo', and 
- *        'FormRow'.
- * 
- *    --> Importing and placing 'Wrapper' style
- *        Component from 'wrappers' directory. 
- *      
+ *    --> Implementing '!values.isMember' to flip 
+ *        beetween 'Login' and 'Register'.  
  * 
  * Note: 'FormRow' Component has been built in order to
  * handle the combination of 'labels' and 'row' built 
@@ -42,17 +32,25 @@ const Register = () => {
         e.preventDefault();
         console.log(e.target)
     }
+
+    const toggleMember = () => {
+        setValues({ ...values, isMember: !values.isMember})
+    }
+
     return(
         <Wrapper className="full-page">
             <form className="form" onSubmit={onSubmit}>
                 <Logo />
-                <h3>Login</h3>
+                <h3>{ values.isMember ? 'Login' : 'Register' }</h3>
                 {/** name field */}
+                { !values.isMember && 
+                
                 <FormRow 
                     type='text' 
                     name='name' 
                     value={values.name} 
                     handleChange={handleChange} />
+                }
 
                 {/** email field */}
                 <FormRow 
@@ -71,6 +69,14 @@ const Register = () => {
                 <button type="submit" className="btn btn-block">
                     submit
                 </button>
+                <p>{ values.isMember ? 'Not a member yet ?' : 'Already a member ?'}
+                    <button 
+                        type="button" 
+                        onClick={toggleMember} 
+                        className='member-btn'
+                        >
+                            {values.isMember ? 'Register' : 'Login'}</button>
+                </p>
             </form>
         </Wrapper>
     )
