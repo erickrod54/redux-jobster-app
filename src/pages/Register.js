@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Logo, FormRow } from "../components";
 import Wrapper from '../assets/wrappers/RegisterPage';
+import { toast } from "react-toastify";
 
-/**Jobster app - version 2 - Register Page - Features:
+/**Jobster app - version 3 - Register Page - Features:
  * 
- *    --> Implementing '!values.isMember' to flip 
- *        beetween 'Login' and 'Register'.  
+ *    --> Building handleChange to control the
+ *        input.
  * 
- * Note: 'FormRow' Component has been built in order to
- * handle the combination of 'labels' and 'row' built 
- * dynamiclly for name, email, and password 
- * respectivelly
+ *    --> Building onSumbit to control the 
+ *        input.
+ * 
+ *    --> Implementing 'toast' from 
+ *        "react-toastify" to display nice
+ *        error message
+ * 
+ * Note: this library can handle the notification 
+ * by custom style boxes for case as error, warning,
+ * sucess, and many more
  */
 
 const initialState = {
@@ -25,12 +32,28 @@ const Register = () => {
     const [ values, setValues ] = useState(initialState)
 
     const handleChange = (e) => {
-        console.log(e.target)
+        const name = e.target.name;
+        const value = e.target.value;
+
+        /**to test that i control the inputs */
+        //console.log(`${name}:${value}`)
+
+        /**setting the value, i can check right
+         * away how state for 'name' and 'values'
+         * change by the user interaction.*/
+        setValues({ ...values, [name]: value })
     }
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(e.target)
+        const { name, email, password, isMember } = values
+        /**here validate that onSubmit the forms there's no empty 
+         * input - ( 'name' is present on register and thats why is 
+         * link by shortcircuit with '!isMember')
+         */
+        if (!email || !password || (!isMember &&  !name)) {
+            toast.error('Please fill out all fields')
+        }
     }
 
     const toggleMember = () => {
