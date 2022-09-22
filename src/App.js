@@ -2,16 +2,23 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Landing, Error, Dashboard, Register } from "./pages";
 
-/**Jobster app - version 1 - App js - Features:
+/**implementing notifications library */
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+/**Jobster app - version 3 - App js - Features:
  * 
- *    --> Importing and placing 'Landing, 'Error', 
- *       'Dashboard', 'Register'.
+ *    --> Importing and placing 'ToastContainer' 
+ *        to handle notifications
  * 
- *    --> Building Routing for very Page 
- *        Component.
+ *    --> Customizing styles for 'ToastContainer'. 
  * 
- * Note: this is part of the first changes to
- * Jobster app
+ * Note: i place the 'ToastContainer' in a root
+ * directory
+ * 
+ * By the toastify documentation the 'ToastContainer'
+ * is targeted by the name 'Toastify__toast' and all
+ * kind of styles can be applied.
  */
 
 function App() {
@@ -23,6 +30,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<Error />}/>
       </Routes>
+      {/**i place the ToastContainer -outside the routes-
+       * in order to render it*/}
+      <ToastContainer position="top-center"/>
     </Router>
   );
 }
