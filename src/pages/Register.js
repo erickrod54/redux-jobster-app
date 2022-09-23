@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Logo, FormRow } from "../components";
 import Wrapper from '../assets/wrappers/RegisterPage';
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-/**Jobster app - version 3 - Register Page - Features:
+/**here i import the actions from userSlice */
+import { loginUser, registerUser } from "../features/user/userSlice";
+
+/**Jobster app - version 4 - Register Page - Features:
  * 
- *    --> Building handleChange to control the
- *        input.
+ *    --> Importing and placing loginUser and registerUser
+ *        actions from 'userSlice'.  
  * 
- *    --> Building onSumbit to control the 
- *        input.
+ *    --> Importing 'user', and  'isLoading' from 
+ *        useSelector( store => store.user)
  * 
- *    --> Implementing 'toast' from 
- *        "react-toastify" to display nice
- *        error message
+ * Note: These action will have implementation 'onSubmit'
  * 
- * Note: this library can handle the notification 
- * by custom style boxes for case as error, warning,
- * sucess, and many more
  */
 
 const initialState = {
@@ -27,9 +26,13 @@ const initialState = {
     isMember:true,
 }
 
+
 const Register = () => {
 
     const [ values, setValues ] = useState(initialState)
+
+    const { user, isLoading } = useSelector( store => store.user)
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const name = e.target.name;
@@ -53,7 +56,17 @@ const Register = () => {
          */
         if (!email || !password || (!isMember &&  !name)) {
             toast.error('Please fill out all fields')
+            return;
         }
+        /**here i dispatch the actions to submit the user data */
+        if (isMember) {
+            /**if its member (i add the return to avoid to javascript 
+             * keep sending data)*/
+            dispatch(loginUser({ email: email, password: password}))
+            return;
+        }
+        /**if not */
+        dispatch(registerUser({ name, email, password }))
     }
 
     const toggleMember = () => {
