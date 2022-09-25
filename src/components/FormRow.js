@@ -1,8 +1,9 @@
 import React from "react";
 
-/**Jobster app - version 1 - 'FormRow' - Features:
+/**Jobster app - version 5 - 'FormRow' - Features:
  * 
- *    --> Building 'FormRow' Component. 
+ *    --> Adding 'labelText' as and option to display
+ *        between labelText and 'name'. 
  * 
  * Note: 'FormRow' Component has been built in order to
  * handle the combination of 'labels' and 'row' built 
@@ -15,7 +16,7 @@ const FormRow = ({ type, name, value, handleChange, labelText }) => {
     return(
     <div className="form-row">
         <label htmlFor={name} className="form-label">
-            {name}
+            {labelText || name}
         </label>
         <input 
         type={type} 
