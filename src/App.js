@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { Landing, Error, Register } from "./pages";
+import { Landing, Error, Register, ProtectedRoute } from "./pages";
 
 import { AddJob, AllJobs, Profile, Stats, SharedLayout  } from './pages/dashboard'
 
@@ -8,16 +8,13 @@ import { AddJob, AllJobs, Profile, Stats, SharedLayout  } from './pages/dashboar
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-/**Jobster app - version 5 - App js - Features:
+/**Jobster app - version 6 - App js - Features:
  * 
- *    --> Importing components from dashboard 
- *        directory.
+ *    --> Implementing 'ProtectedRoute' on the 
+ *        SharedLayout and nested Routes.
  * 
- *    --> Setting up nested route for 'dashboard'
- * 
- * Note: to set the nested route for dashboard i use
- * the 'SharedLayout' and 'Stats' as index ( i can use 
- * also any other page component ).
+ * Note: the 'ProtectedRoute' will protect all
+ * the dashboard directory.
  */
 
 function App() {
@@ -26,10 +23,14 @@ function App() {
       
       <Routes>
         {/**here i set the nested route */}
-        <Route path="/" element={<SharedLayout />}>
+        <Route path="/" element={
+          <ProtectedRoute>
+            <SharedLayout />
+          </ProtectedRoute>
+        }>
           <Route index element={<Stats />}/>
           <Route path="/all-jobs" element={<AllJobs />}/>
-          <Route path="/add-jobs" element={<AddJob />}/>
+          <Route path="/add-job" element={<AddJob />}/>
           <Route path="/profile" element={<Profile />}/>
         </Route>
 
