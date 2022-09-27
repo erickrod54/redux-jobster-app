@@ -1,14 +1,12 @@
 import React from "react";
 
-/**Jobster app - version 5 - 'FormRow' - Features:
+/**Jobster app - version 6 - 'FormRow' - Features:
  * 
- *    --> Adding 'labelText' as and option to display
- *        between labelText and 'name'. 
+ *    --> Building the form Row Component. 
  * 
- * Note: 'FormRow' Component has been built in order to
- * handle the combination of 'labels' and 'row' built 
- * dynamiclly for name, email, and password 
- * respectivelly and more 
+ * Note: this porpuse of this component is to give
+ * styles and functionality to multiple basic forms
+ * on pages as 'AddJob' and 'Profile'  
  */
 
 const FormRow = ({ type, name, value, handleChange, labelText }) => {
@@ -19,6 +17,7 @@ const FormRow = ({ type, name, value, handleChange, labelText }) => {
             {labelText || name}
         </label>
         <input 
+        id={name}
         type={type} 
         name={name} 
         value={value} 
