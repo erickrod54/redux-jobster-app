@@ -7,20 +7,12 @@ import { registerUserThunk,
          loginUserThunk,
          updateUserThunk } from "./userThunk";
 
-/**Jobster app - version 6 - userSlice js - Features:
+/**Jobster app - version 7 - userSlice js - Features:
  * 
- *    --> Building 'isSidebarOpen', and'toogle' 
- *       actions 
+ *    --> Setting up messagge to logout
  * 
- *    --> Building updating feature for Profile
- *        page.
- * 
- *    --> Importing and returning 'registerUserThunk',
- *        'loginUserThunk', 'updateUserThunk' from 
- *        'userThunk'. 
- * 
- * Note: These actions are going to brr used for 
- * the 'SmallSidebar' and 'Navbar'
+ * Note: this message will dispaly once the user logs 
+ * out.
  */
 
 const initialState = { 
@@ -53,10 +45,13 @@ const userSlice = createSlice({
         toggleSidebar:(state) => {
             state.isSidebarOpen = !state.isSidebarOpen;
         },
-        logoutUser: (state) => {
+        logoutUser: (state, { payload }) => {
             state.user = null
             state.isSidebarOpen = false
             removeUserFromLocalStorage()
+            if (payload) {
+                toast.success(payload)
+            }
         },
     },
     extraReducers:{
