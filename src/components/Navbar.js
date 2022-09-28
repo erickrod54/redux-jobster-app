@@ -6,15 +6,13 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar, logoutUser } from '../features/user/userSlice';
 
-/**Jobster app - version 5 - Navbar js - Features:
+/**Jobster app - version 7 - Navbar js - Features:
  * 
- *    --> Building Navbar component. 
+ *    --> Setting up the message that is going to 
+ *        be the payload for loging out message.
  * 
- *    --> Importing and placing 'logoutUser()'
- *        from the userSlice.
- * 
- * Note: this component is created to applied the style
- * to every basic form row that i will build in the app
+ * Note: This message will display once the user 
+ * log out.
  */
 
 const Navbar = () => {
@@ -60,7 +58,7 @@ const Navbar = () => {
                                 <button 
                                     type='button' 
                                     className='dropdown-btn' 
-                                    onClick={() => dispatch(logoutUser())}
+                                    onClick={() => dispatch(logoutUser('logging out...'))}
                                     >
                                         logout
                                     </button>
