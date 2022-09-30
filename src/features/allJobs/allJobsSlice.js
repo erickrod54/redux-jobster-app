@@ -2,15 +2,18 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
 
-/**Jobster app - version 6 - 'jobSlice' js - Features:
+/**Jobster app - version 7 - 'jobSlice' js - 
+ * Features:
  * 
- *    --> Building 'initialFiltersState'
+ *    --> Building 'getAllJobs' feature.
+ *  
+ * Note: this fetaure is going to be
+ * use to receive allTheJobs from 
+ * 'addJob' to 'allJobs'
  * 
- *    --> Building 'initialState'
- * 
- *    --> Building 'allJobsSlice' and exporting it 
- * 
- * Note: this is the initial setup for 'allJobSlice'
+ * the editing will redirect to
+ * 'addJobs' to edit the job 
+ * there.
  */
 
 
@@ -26,7 +29,7 @@ const initialFiltersState = {
  * the Loading component spinner.
  */
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   jobs: [],
   totalJobs: 0,
   numOfPages: 1,
@@ -36,9 +39,39 @@ const initialState = {
   ...initialFiltersState,
 };
 
+export const getAllJobs = createAsyncThunk('allJobs/getJobs', async(_,thunkAPI) => {
+  let url = `/jobs`
+  try {
+    const resp = await customFetch.get(url, {
+      headers:{
+        authorization: `Bearer ${thunkAPI.getState().user.user.token}`
+      }
+    })
+    /**here i can test that i recieve the data in the
+     * front-end*/
+    //console.log(resp.data)
+    return resp.data
+  } catch (error) {
+    return thunkAPI.rejectWithValue('There was an error')
+  }
+})
+
 const allJobsSlice = createSlice({
     name: 'allJobs',
     initialState,
+    extraReducers:{
+      [getAllJobs.pending]: (state) => {
+        state.isLoading = true
+      },
+      [getAllJobs.fulfilled]: (state, {payload}) => {
+        state.isLoading = false;
+        state.jobs = payload.jobs
+      },
+      [getAllJobs.rejected]: (state, {payload}) => {
+        state.isLoading = false
+        toast.error(payload)
+      },
+    }
 });
 
 export default allJobsSlice.reducer;
