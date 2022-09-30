@@ -1,30 +1,35 @@
-import { useEffect } from 'react';
+import React,{ useEffect} from 'react';
 import Job from './Job';
 import Wrapper from '../assets/wrappers/JobsContainer';
 import { useSelector, useDispatch } from 'react-redux';
 import Loading from './Loading';
+import { getAllJobs } from '../features/allJobs/allJobsSlice';
 
-/**Jobster app - version 6 - jobsContainer js - Features:
+/**Jobster app - version 7 - jobsContainer js - Features:
  * 
- *    --> Building 'jobsContainer' Component.
- * 
- *    --> Importing 'jobs' and 'isLoading' from the
- *        store.
- * 
- *    --> Building the conditional rendering for 'isLoading'
- *        'jobs.length === 0' and for the 'jobs'. 
+ *    --> Implementing useEffect to dispatch 'getAllJobs'
+ *        feature.  
  * 
  * Note: this component still has some work to do.
  */
 
+
 const JobsContainer = () => {
 
+    
+    
     const { jobs, isLoading } = useSelector((store) => store.allJobs)
     const dispatch = useDispatch()
-
+    
+    useEffect(() => {
+        dispatch(getAllJobs())
+    // eslint-disable-next-line 
+    }, [])
+    
     if (isLoading) {
         return <Loading center/>
     }
+    
 
     if (jobs.length === 0 ) {
         return(
@@ -39,7 +44,8 @@ const JobsContainer = () => {
             <h5>Jobs info</h5>
             <div className='jobs'>
                 {jobs.map((job) => {
-                    console.log(job)
+                    /**here i can test that i get the jobs */
+                    //console.log(job)
                     return <Job key={job._id} {...job}/>
                 })}
             </div>
