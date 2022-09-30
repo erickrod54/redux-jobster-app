@@ -1,12 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userSlice from "./features/user/userSlice";
 import jobSlice from './features/job/jobSlice';
+import allJobsSlice from './features/allJobs/allJobsSlice';
 
-/**Jobster app - version 6 - store js - Features:
+/**Jobster app - version 7 - store js - Features:
  * 
- *   --> Builting the 'store' 
- * 
- *   --> Adding 'jobSlice' to the store.
+ *   --> Adding 'allJobsSlice' to the store.
  * 
  * Note: the store will reduce all state slices. 
  */
@@ -14,6 +13,7 @@ import jobSlice from './features/job/jobSlice';
 export const store = configureStore({
     reducer:{
         user: userSlice,
-        job:jobSlice
+        job:jobSlice,
+        allJobs: allJobsSlice
     }
 })
