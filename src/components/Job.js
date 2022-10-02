@@ -3,23 +3,29 @@ import { Link } from 'react-router-dom';
 import Wrapper from '../assets/wrappers/Job';
 import { useDispatch } from 'react-redux';
 import JobInfo from './JobInfo';
+import moment from 'moment';
+import { deleteJob, setEditJob } from '../features/job/jobSlice';
 
-/**Jobster app - version 7 - jobs js - Features:
+/**Jobster app - version 8 - jobs js - Features:
  * 
- *    --> Building 'Job' Component.  
+ *    --> Importing and implementing 'moment' to
+ *        set nice format to the date 
  * 
- * Note: this component will display the 
- * information Card on 'allJobs' with all
- * related to the job application.
+ *    --> Importing and placing 'deleteJob' action 
+ *        by '_id'
+ *          
+ * Note: by this version is almost everything set in
+ * this component.
+ * 
  */
 
-const Job = ({ id, position,
+const Job = ({ _id, position,
              company, jobLocation, 
              jobType, createdAt, status }) => {
 
     const dispatch = useDispatch()
 
-    const date = createdAt;
+    const date = moment(createdAt).format('MMM Do, YYYY');
     return(
         <Wrapper>
         <header>
@@ -40,12 +46,19 @@ const Job = ({ id, position,
                 <div className='actions'>
                     <Link to='/add-job'
                          className='btn edit-btn'
-                         onClick={() => console.log('edit job')}>
+                         onClick={() => dispatch(setEditJob({
+                            editJobId:_id,
+                            position,
+                            company,
+                            jobLocation,
+                            jobType,
+                            status,
+                         }))}>
                         Edit{''}
                     </Link>
                     <button 
                         className='btn delete-btn' 
-                        onClick={() => console.log('delete job')}>
+                        onClick={() => dispatch(deleteJob(_id))}>
                         delete
                     </button>
                 </div>
