@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
 
-/**Jobster app - version 7 - 'jobSlice' js - 
+/**Jobster app - version 8 - 'jobSlice' js - 
  * Features:
  * 
  *    --> Building 'getAllJobs' feature.
@@ -59,6 +59,14 @@ export const getAllJobs = createAsyncThunk('allJobs/getJobs', async(_,thunkAPI) 
 const allJobsSlice = createSlice({
     name: 'allJobs',
     initialState,
+    reducers:{
+      showLoading:(state) => {
+        state.isLoading = true;
+      },
+      hideLoading:(state) => {
+        state.isLoading = false;
+      },
+    },
     extraReducers:{
       [getAllJobs.pending]: (state) => {
         state.isLoading = true
@@ -73,5 +81,7 @@ const allJobsSlice = createSlice({
       },
     }
 });
+
+export const { showLoading, hideLoading } = allJobsSlice.actions;
 
 export default allJobsSlice.reducer;
