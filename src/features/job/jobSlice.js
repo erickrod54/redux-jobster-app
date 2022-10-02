@@ -1,22 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import customFetch from '../../utils/axios';
-import { getUserFromLocalStorage } from '../../utils/localStorage';
-import { showLoading, hideLoading, getAllJobs } from '../allJobs/allJobsSlice';
-import { logoutUser } from '../user/userSlice';
 
-/**Jobster app - version 8 - jobSlice js - Features:
+import { getUserFromLocalStorage } from '../../utils/localStorage';
+
+import { createJobThunk, deleteJobThunk, editJobThunk } from './jobThunk';
+
+/**Jobster app - version 9 - jobSlice js - Features:
  * 
- *    --> Building 'deleteJob' action and exporting it.
+ *    --> Refactoring 'JobSlice'.
  * 
- *    --> Building 'editJob' action and exporting it.  
+ *    --> Implementing 'createJobThunk', 'deleteJobThunk',
+ *        and 'editJobThunk' callBack functions on the
+ *        actions.
  * 
- *    --> Building 'extraReducers' for 'deleteJob'.
- * 
- *    --> Building 'extraReducers' for 'editJob'.   
- * 
- * Note: By this version i have been set all the functionality
- * related with deleitng and editing a job.
+ * Note: By this version i have been set callfunctions 
+ * in the action with the name of 'Thunk'.
  * 
  */
 
@@ -35,58 +33,16 @@ const initialState = {
 };
 
 /**here i build the create job action */
-export const createJob = createAsyncThunk('job/createJob', async(job, thunkAPI) => {
-    try {
-        const resp = await customFetch.post('/jobs', job, {
-            headers: {
-                authorization:`Bearer ${thunkAPI.getState().user.user.token}`
-            }
-        })
-        thunkAPI.dispatch(clearValues())
-        return resp.data
-    } catch (error) {
-        if (error.response.status === 401) {
-            thunkAPI.dispatch(logoutUser())
-            return thunkAPI.rejectWithValue('Unauthorized access, you\'ve redirect to login')
-        }  
-        return thunkAPI.rejectWithValue(error.response.data.msg);      
-    }
-})
+export const createJob = createAsyncThunk('job/createJob',
+ createJobThunk)
 
 /**here i build the delete job action */
-export const deleteJob = createAsyncThunk('job/deleteJob', async(jobId, thunkAPI) => {
-    thunkAPI.dispatch(showLoading())
-    /**testing that i get the id onClicking 'delete' button*/
-    //console.log(jobId)
-    try {
-        const resp = await customFetch.delete(`/jobs/${jobId}`, {
-            headers: {
-                authorization:`Bearer ${thunkAPI.getState().user.user.token}`
-            }
-        })
-        thunkAPI.dispatch(getAllJobs())
-        return resp.data.msg
-    } catch (error) {
-        thunkAPI.dispatch(hideLoading())
-        return thunkAPI.rejectWithValue(error.response.data.msg)
-    }
-})
+export const deleteJob = createAsyncThunk('job/deleteJob',
+ deleteJobThunk)
 
 /**here i build the 'editJob' action*/
-export const editJob = createAsyncThunk('job/editJob', async({jobId, job}, thunkAPI) => {
-    try {
-        const resp = await customFetch.patch(`/jobs/${jobId}`, job, {
-            headers: {
-                authorization:`Bearer ${thunkAPI.getState().user.user.token}`
-            }
-        })
-        thunkAPI.dispatch(clearValues())
-        return resp.data
-    } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.msg)
-    }
-}
-)
+export const editJob = createAsyncThunk('job/editJob',
+ editJobThunk)
 
 /**here i build the jobSlice */
 const jobSlice = createSlice({
