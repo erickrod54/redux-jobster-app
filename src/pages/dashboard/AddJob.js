@@ -2,34 +2,25 @@ import { FormRow, FormRowSelect } from '../../components';
 import Wrapper from '../../assets/wrappers/DashboardFormPage';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { handleChange, clearValues, createJob } from '../../features/job/jobSlice';
+import { handleChange, clearValues, createJob, editJob } from '../../features/job/jobSlice';
 import { useEffect } from 'react';
 
-/**Jobster app - version 6 - AddJob Page - Features:
+/**Jobster app - version 8 - AddJob Page - Features:
  * 
- *    --> Building 'AddJob' Page
+ *    --> Setting up 'handleSubmit' > 'editJob'.
  * 
- *    --> Importing all the 'AddJob' related props 
- *        from the store. 
+ *    --> Setting the condition in order to modify 
+ *        the 'location' only if is 'editing'
+ *        ( in the useEffect)  
  * 
- *    --> Building 'handleSubmit' and 'handleJobInput' 
+ * Note:  For the 
+ *      
+ *      'handleSubmit' > 'editJob' i have to 'return'
  * 
- *    --> Building the input returns on 'FormRow'.
+ * after dispatching the action ( because if not, will dispatch
+ * the action that will create a job -edit and create, i just
+ * want to edit-)
  * 
- *    --> Building buttons an setting actions
- * 
- *    --> Building the input that returns on 
- *       'FormRowSelect'   
- * 
- *    --> Importing and dispatching 'handleChange'  
- *        to target user input. 
- * 
- *    --> Implementing 'clearValues' in order to clear
- *        the text.
- * 
- * Note: By this version is already test that initial
- * functionality works and styles set, for next versions
- * will be set the complete functionality.
  */
 
 const AddJob = () => {
@@ -57,6 +48,18 @@ const AddJob = () => {
             toast.error('Please fill out all fields')
             return;
         }
+        /**here i set the condition to edit the 'job' and
+         * pass the entire job object*/
+        if (isEditing) {
+            dispatch(editJob({ jobId: editJobId,
+                 job:{position, company,
+                 jobLocation, jobType, status }
+                }
+                ))
+                /**i have to place return so, javascript won't
+                 * create the job again after editing it*/
+                return;
+        }
         /**here i dispacth 'createJob' onSubmbit */
         dispatch(createJob({ position, company, jobLocation, jobType, status }));
     }
@@ -69,11 +72,15 @@ const AddJob = () => {
     }
 
     useEffect(() => {
-        dispatch(handleChange({
-            name:'jobLocation',
-             value:user.location
-        })
-      );
+        /**i set the condition in order to modify
+         * the 'location' only if is 'editing'*/
+        if (!isEditing) {
+            dispatch(handleChange({
+                name:'jobLocation',
+                 value:user.location
+            })
+          );
+        }
     },[])
 
     return(
