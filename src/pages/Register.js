@@ -8,21 +8,13 @@ import { useNavigate } from "react-router-dom";
 /**here i import the actions from userSlice */
 import { loginUser, registerUser } from "../features/user/userSlice";
 
-/**Jobster app - version 5 - Register Page - Features:
+/**Jobster app - version 9 - Register Page - Features:
  * 
- *    --> Setting the disabled attribute when 'isLoading' 
- *         and using ternary operator to flip the button 
- *         text between 'loading...' and 'submit'}
+ *    --> Building 'Demo' button in order to acceess and
+ *        get full sample data. 
  * 
- *    --> Importing and placing 'navigate' (useNavigate hook)
- *        to programmaticlly navigate to Dashboard once
- *        the user login.
- * 
- * Note: These action will have implementation 'onSubmit'
- *
- * to implement the 'navigate' to 'Dashboard', i use 
- * the hook and a useEffect > dependency 'user'
- * 
+ * Note: this feature is place and develop in order to get more
+ * data and develop 'stats' section later
  */
 
 const initialState = {
@@ -122,6 +114,15 @@ const Register = () => {
 
                 <button type="submit" className="btn btn-block" disabled={isLoading}>
                     {isLoading ? 'loading...' : 'submit'}
+                </button>
+                {/**here i set up the 'demo' feature in order
+                 * to get more data and develop 'stats' section
+                 * later*/}
+                <button type="button"
+                        className="btn btn-block btn-hipster"
+                        disabled={isLoading}
+                        onClick={() => dispatch(loginUser({email:'testUser@test.com', password:'secret'}))}>
+                    {isLoading ? 'loading...' : 'demo app'}
                 </button>
                 <p>{ values.isMember ? 'Not a member yet ?' : 'Already a member ?'}
                     <button 
