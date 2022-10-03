@@ -1,19 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import authHeader from '../../utils/AuthHeader';
 import customFetch from '../../utils/axios';
 
-/**Jobster app - version 8 - 'jobSlice' js - 
+/**Jobster app - version 9 - 'jobSlice' js - 
  * Features:
  * 
- *    --> Building 'getAllJobs' feature.
- *  
- * Note: this fetaure is going to be
- * use to receive allTheJobs from 
- * 'addJob' to 'allJobs'
+ *    --> Building 'ShowStats' request
  * 
- * the editing will redirect to
- * 'addJobs' to edit the job 
- * there.
+ *    --> Setting up the pagination once 
+ *        'getAllJobs' get fulfilled
+ * 
+ *    --> Building 'handleChange' and 'ClearFilters' and
+ *        exporting it.
+ * 
+ *    --> Implementing 'authHeader(thunkAPI)' util to
+ *        simplify the header code
+ *  
+ * Note: this request is the las request for
+ * this file
+ * 
+ * Once 'getAllJobs' get fulfilled, i'll focus on these
+ * two props 'totalJobs', and 'numOfPages' (they were created 
+ * at initialState)
  */
 
 
@@ -42,17 +51,25 @@ const initialState = {
 export const getAllJobs = createAsyncThunk('allJobs/getJobs', async(_,thunkAPI) => {
   let url = `/jobs`
   try {
-    const resp = await customFetch.get(url, {
-      headers:{
-        authorization: `Bearer ${thunkAPI.getState().user.user.token}`
-      }
-    })
+    const resp = await customFetch.get(url, authHeader(thunkAPI))
     /**here i can test that i recieve the data in the
      * front-end*/
-    //console.log(resp.data)
+    console.log('all the jobs data ==>', resp.data)
     return resp.data
   } catch (error) {
     return thunkAPI.rejectWithValue('There was an error')
+  }
+})
+
+export const showStats = createAsyncThunk('allJobs/showStats', async(_,thunkAPI) => {
+  try {
+    /**here i have to pass the header > user > token to get the stats and 
+    * avoid a 401 unauthorized access*/
+    const resp = await customFetch.get('/jobs/stats', authHeader(thunkAPI))
+    console.log('this is the ShowStats result ==>',resp.data);
+    return resp.data
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data.msg)
   }
 })
 
@@ -66,6 +83,13 @@ const allJobsSlice = createSlice({
       hideLoading:(state) => {
         state.isLoading = false;
       },
+      handleChange:(state, { payload: {name, value} }) => {
+        /**state.page = 1 later */
+        state[name] = value
+      },
+      clearFilters:(state) => {
+        return {...state, ...initialFiltersState}
+      }
     },
     extraReducers:{
       [getAllJobs.pending]: (state) => {
@@ -73,15 +97,30 @@ const allJobsSlice = createSlice({
       },
       [getAllJobs.fulfilled]: (state, {payload}) => {
         state.isLoading = false;
-        state.jobs = payload.jobs
+        state.jobs = payload.jobs;
+        state.numOfPages = payload.numOfPages;
+        state.totalJobs = payload.totalJobs;
       },
       [getAllJobs.rejected]: (state, {payload}) => {
+        state.isLoading = false
+        toast.error(payload)
+      },
+      /**extraReducers fro showStats */
+      [showStats.pending]: (state) => {
+        state.isLoading = true
+      },
+      [showStats.fulfilled]: (state, {payload}) => {
+        state.isLoading = false;
+        state.stats = payload.defaultStats;
+        state.monthlyApplications = payload.monthlyApplications;
+      },
+      [showStats.rejected]: (state, {payload}) => {
         state.isLoading = false
         toast.error(payload)
       },
     }
 });
 
-export const { showLoading, hideLoading } = allJobsSlice.actions;
+export const { showLoading, hideLoading, handleChange, clearFilters } = allJobsSlice.actions;
 
 export default allJobsSlice.reducer;
