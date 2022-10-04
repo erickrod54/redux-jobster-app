@@ -6,19 +6,18 @@ import Loading from './Loading';
 import { getAllJobs } from '../features/allJobs/allJobsSlice';
 import PageBtnContainer from './PageBtnContainer';
 
-/**Jobster app - version 9 - jobsContainer js - Features:
+/**Jobster app - version 10 - jobsContainer js - Features:
  * 
- *    --> Building 'JobsContainer'.
+ *    --> Setting 'page' as depency array on the useEffect
+ *        as the 'search' related props . 
  * 
- *    --> Dispatching action to 'getAllJobs'.
+ * Note: This dependency is been set by this version
+ * because 'getAllJobs' is dispatched and the query 
+ * strings params are set already in the allJobSlice.
  * 
- *    --> Importing and placing 'Job' Component  
- * 
- *    --> Importing and placing 'PageBtnContainer'
- *        to build the pagination later. 
- * 
- * Note: from this component i'll spread all the props
- * to build 'Job' Component.
+ * the 'search' related props and the 'page' will modify
+ * the search params by using the Search Form and will
+ * dispatch here 'getAllJobs'
  */
 
 
@@ -27,7 +26,16 @@ const JobsContainer = () => {
     
     /**here is destructure the props for the pagination
      * from the 'allJobs' slice*/
-    const { jobs, isLoading, page, totalJobs, numOfPages } = useSelector((store) => store.allJobs)
+    const { jobs,
+            isLoading,
+            page,
+            totalJobs,
+            numOfPages,
+            search,
+            searchStatus,
+            searchType,
+            sort } = useSelector((store) => store.allJobs)
+
     const dispatch = useDispatch()
     
     /**'getAllJobs' will dispatch once the 
@@ -35,7 +43,7 @@ const JobsContainer = () => {
     useEffect(() => {
         dispatch(getAllJobs())
     // eslint-disable-next-line 
-    }, [])
+    }, [page, search, searchStatus, searchType, sort])
     
     if (isLoading) {
         return <Loading center/>
