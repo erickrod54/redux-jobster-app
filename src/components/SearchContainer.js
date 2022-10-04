@@ -3,21 +3,15 @@ import Wrapper from '../assets/wrappers/SearchContainer';
 import { useSelector, useDispatch } from 'react-redux';
 import { handleChange, clearFilters } from '../features/allJobs/allJobsSlice';
 
-/**Jobster app - version 9 - SearchContainer js - Features:
+/**Jobster app - version 10 - SearchContainer js - Features:
  * 
- *    -->  Building 'SearchContainer'.
- *  
- *    --> Destructuring all props related to the 'search'
- *        and the 'job' from the store.
+ *    --> Fixing bug for 'handleSearch' that makes
+ *        multiple request as the user types.   
  * 
- *     --> Building the return for the 'position', 'status',
- *         'jobType', and 'sort' 
+ * Note:  Fixing 'handleSearch' (to troubleshoot and see this
+ * error - Chrome > Network tab, and comment handleChange
+ * 'if (isLoading) return;' )
  * 
- * Note: in next versions i'll develop the functionality
- * to filter and return by each user entry.
- * 
- * By this version all the inputs are controlled 'handleSearch'
- * and 'handleSubmit'.
  */
 
 const SearchContainer = () => {
@@ -39,6 +33,9 @@ const SearchContainer = () => {
           /**here i dispatch 'handleChange' to control 
            * the inputs */
           const handleSearch = (e) => {
+            /**this will fix multiple request while the
+             * user is typing */
+            if (isLoading) return;
             /**isLoading check later */
             dispatch(handleChange({ name: e.target.name, value: e.target.value }))
           };
