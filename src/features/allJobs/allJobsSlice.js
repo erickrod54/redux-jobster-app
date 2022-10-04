@@ -3,19 +3,17 @@ import { toast } from 'react-toastify';
 import authHeader from '../../utils/AuthHeader';
 import customFetch from '../../utils/axios';
 
-/**Jobster app - version 9 - 'jobSlice' js - 
+/**Jobster app - version 10 - 'jobSlice' js - 
  * Features:
  * 
- *    --> Building 'ShowStats' request
+ *    --> Building 'changePage' action and exporting
+ *        it.
  * 
- *    --> Setting up the pagination once 
- *        'getAllJobs' get fulfilled
+ *    --> Building the 'Query String Params' for the 
+ *        'url'
  * 
- *    --> Building 'handleChange' and 'ClearFilters' and
- *        exporting it.
- * 
- *    --> Implementing 'authHeader(thunkAPI)' util to
- *        simplify the header code
+ *    --> Fixing 'handleChange' bug that preserves
+ *        the old 'page' state after the search.
  *  
  * Note: this request is the las request for
  * this file
@@ -23,6 +21,13 @@ import customFetch from '../../utils/axios';
  * Once 'getAllJobs' get fulfilled, i'll focus on these
  * two props 'totalJobs', and 'numOfPages' (they were created 
  * at initialState)
+ * 
+ * the params use to build the 'url' dynamic are 
+ * 'initialFiltersState'
+ * 
+ * Fixing 'handleChange' (to troubleshoot and see this
+ * error - Chrome > Network tab, and comment handleChange
+ * 'state.page = 1' )
  */
 
 
@@ -49,7 +54,22 @@ const initialState = {
 };
 
 export const getAllJobs = createAsyncThunk('allJobs/getJobs', async(_,thunkAPI) => {
-  let url = `/jobs`
+
+  const { page, search, searchStatus, searchType, sort } = thunkAPI.getState().allJobs
+  
+  /**part of this configuration is server made to set
+   * the keys for example 'jobs?status',' &jobType=' 
+   * and so on..*/
+
+  /**now all the 'keys' are state and make the url 
+   * dynamic */
+  let url = 
+  `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}&page=${page}`
+
+  /**only if search exist i append it to url */
+  if (search) {
+    url = url + `&search=${search}`
+  }
   try {
     const resp = await customFetch.get(url, authHeader(thunkAPI))
     /**here i can test that i recieve the data in the
@@ -84,11 +104,17 @@ const allJobsSlice = createSlice({
         state.isLoading = false;
       },
       handleChange:(state, { payload: {name, value} }) => {
-        /**state.page = 1 later */
+        /**this will fix the bug 'query search > page preserve
+         * to old state' - so every time that changes will set
+         * as '1 '*/
+        state.page = 1 
         state[name] = value
       },
       clearFilters:(state) => {
         return {...state, ...initialFiltersState}
+      },
+      changePage: (state, { payload }) => {
+        state.page = payload
       }
     },
     extraReducers:{
@@ -121,6 +147,6 @@ const allJobsSlice = createSlice({
     }
 });
 
-export const { showLoading, hideLoading, handleChange, clearFilters } = allJobsSlice.actions;
+export const { showLoading, hideLoading, handleChange, clearFilters, changePage } = allJobsSlice.actions;
 
 export default allJobsSlice.reducer;
