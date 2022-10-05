@@ -1,13 +1,15 @@
 import customFetch from "../../utils/axios";
 import { logoutUser } from "./userSlice";
+import { clearJobsState } from '../allJobs/allJobsSlice'
+import { clearValues } from "../job/jobSlice";
 
-/**Jobster app - version 6 - userThunk js - Features:
+/**Jobster app - version 12 - userThunk js - Features:
  * 
- *    --> Building 'userThunk' to simplify the api
- *        request to a function call
+ *    --> Building the 'clearStoreThunk'
  * 
- * Note: These function will handle more efficientlly the
- * lines of code of 'userSlice'.
+ * Note: the 'clearStoreThunk' is set here because the 
+ * behavior of preserving the values in the inputs forms
+ * is related with the user
  */
 
 export const registerUserThunk = async(url, user, thunkAPI) => {
@@ -51,5 +53,26 @@ export const updateUserThunk = async(url, user, thunkAPI) => {
         }
        return thunkAPI.rejectWithValue(error.response.data.msg);
         
+    }
+}
+
+/**here i create 'clearStorethunk' */
+export const clearStoreThunk = async(message, thunkAPI) => {
+    try {
+        /**this request once the user logs out will
+         * perform 'clearJobState' and 'clearValues'
+         * -will return initialState for 'Job' and 
+         * 'allJobsSlice'- 
+        */
+        thunkAPI.dispatch(logoutUser(message))
+        thunkAPI.dispatch(clearJobsState())
+        thunkAPI.dispatch(clearValues())
+        /**i just return the promise - because the
+         * main goal is get initialState- */
+        return Promise.resolve()
+    } catch (error) {
+        /**i just return the promise - because the
+         * main goal is get initialState- */
+        return Promise.reject()
     }
 }
