@@ -2,18 +2,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { getAllJobsThunk, showStatsThunk } from './allJobsThunk';
 
-/**Jobster app - version 11 - 'jobSlice' js - 
+/**Jobster app - version 12 - 'jobSlice' js - 
  * Features:
  * 
- *    --> Importing and placing 'getAllJobsThunk' request.
- *        'getAllJobs' to simplify the code.     
- * 
- *    --> Importing and placing 'showStatsThunk' request
- *        'showStats' to simplify the code.
+ *    --> Fixing 'AllJobsState' bug by making an action 
+ *        to clear the jobs state.
  *  
- * Note: Placing the thunks in a separate file is part of
- * simplifying the code in this file 
- * 
+ * Note: The bug can be visualize it in previous versions
+ * by filling out the basic form > 'all jobs' tab, and 
+ * loging out switching to another account i notice that 
+ * the inputs preserves the values entered by the previuos
+ * account loged ( so this is not how is supposed to behave)
  */
 
 
@@ -65,7 +64,9 @@ const allJobsSlice = createSlice({
       },
       changePage: (state, { payload }) => {
         state.page = payload
-      }
+      },
+      /**i just set it back to initialState */
+      clearJobsState: (state) => initialState
     },
     extraReducers:{
       [getAllJobs.pending]: (state) => {
@@ -97,6 +98,6 @@ const allJobsSlice = createSlice({
     }
 });
 
-export const { showLoading, hideLoading, handleChange, clearFilters, changePage } = allJobsSlice.actions;
+export const { showLoading, hideLoading, handleChange, clearFilters, changePage, clearJobsState} = allJobsSlice.actions;
 
 export default allJobsSlice.reducer;
