@@ -5,14 +5,20 @@ import { addUserToLocalStorage,
          removeUserFromLocalStorage } from "../../utils/localStorage";
 import { registerUserThunk,
          loginUserThunk,
-         updateUserThunk } from "./userThunk";
+         updateUserThunk,
+         clearStoreThunk   
+        } from "./userThunk";
 
-/**Jobster app - version 7 - userSlice js - Features:
+/**Jobster app - version 12 - userSlice js - Features:
  * 
- *    --> Setting up messagge to logout
+ *    --> Building 'clearStore' action and exporting it.
  * 
- * Note: this message will dispaly once the user logs 
- * out.
+ *    --> Impporting and placing 'clearStoreThunk' in the
+ *        'clearStore' action 
+ * 
+ * Note: This action is going to be use by NavBar Component
+ * instead of just 'logout' as it is in previous versions
+ * 
  */
 
 const initialState = { 
@@ -36,6 +42,8 @@ export const updateUser = createAsyncThunk(
      return updateUserThunk('/auth/updateUser', user, thunkAPI)
     }
 )
+
+export const clearStore = createAsyncThunk('user/clearStore', clearStoreThunk)
 
 const userSlice = createSlice({
     name: 'user',
@@ -115,6 +123,9 @@ const userSlice = createSlice({
             state.isLoading = false;
             toast.error(payload)
         },
+        [clearStore.rejected]: () => {
+            toast.error('There was an error ..')
+        }
     }
 })
 
