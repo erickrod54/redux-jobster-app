@@ -1,15 +1,16 @@
-import customFetch from "../../utils/axios";
+import customFetch, { checkForUnauthorizedResponse } from "../../utils/axios";
 import { logoutUser } from "./userSlice";
 import { clearJobsState } from '../allJobs/allJobsSlice'
 import { clearValues } from "../job/jobSlice";
 
-/**Jobster app - version 12 - userThunk js - Features:
+/**Jobster app - version 13 - userThunk js - Features:
  * 
- *    --> Building the 'clearStoreThunk'
+ *    --> Importing and setting 'checkForUnauthorizedResponse'
+ *        for 'updateUserThunk'.
+ *    
+ * Note:  i am doing the check ony for 'updateUserThunk',
+ * because register and user they have aready verification.
  * 
- * Note: the 'clearStoreThunk' is set here because the 
- * behavior of preserving the values in the inputs forms
- * is related with the user
  */
 
 export const registerUserThunk = async(url, user, thunkAPI) => {
@@ -51,8 +52,8 @@ export const updateUserThunk = async(url, user, thunkAPI) => {
             thunkAPI.dispatch(logoutUser())
             return thunkAPI.rejectWithValue('Unauthorized access, you\'ve redirect to login')
         }
-       return thunkAPI.rejectWithValue(error.response.data.msg);
-        
+        return checkForUnauthorizedResponse(error, thunkAPI);
+      
     }
 }
 
