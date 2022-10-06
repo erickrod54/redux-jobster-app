@@ -1,18 +1,16 @@
 import authHeader from '../../utils/AuthHeader';
-import customFetch from '../../utils/axios';
+import customFetch, { checkForUnauthorizedResponse } from '../../utils/axios';
 import { showLoading, hideLoading, getAllJobs } from '../allJobs/allJobsSlice';
-import { logoutUser } from '../user/userSlice';
+
 import { clearValues } from './jobSlice';
 
-/**Jobster app - version 9 - StatsContainer - Features:
+/**Jobster app - version 13 - StatsContainer - Features:
  * 
- *    --> Building and exporting 'createJobThunk',    
- *        'deleteJobThunk' and 'editJobThunk' callbacks
- *         functions
+ *    --> Importing and setting check 401 for 'createJobThunk',
+ *        'deleteJobThunk', and  'editJobThunk' 
  *   
- * Note: the 'createJobThunk', 'deleteJobThunk' and 'editJobThunk' 
- * callbacks functions are built in order to simplify the jobSlice
- * code.
+ * Note: this way i will  'check 401' in every step of the
+ * user flow.
  */
 
 export const createJobThunk = async(job, thunkAPI) => {
@@ -22,8 +20,8 @@ export const createJobThunk = async(job, thunkAPI) => {
         return resp.data
     } catch (error) {
         if (error.response.status === 401) {
-            thunkAPI.dispatch(logoutUser())
-            return thunkAPI.rejectWithValue('Unauthorized access, you\'ve redirect to login')
+            /** */
+            return checkForUnauthorizedResponse(error, thunkAPI);
         }  
         return thunkAPI.rejectWithValue(error.response.data.msg);      
     }
@@ -39,7 +37,7 @@ export const deleteJobThunk = async(jobId, thunkAPI) => {
         return resp.data.msg
     } catch (error) {
         thunkAPI.dispatch(hideLoading())
-        return thunkAPI.rejectWithValue(error.response.data.msg)
+        return checkForUnauthorizedResponse(error, thunkAPI);
     }
 }
 
@@ -49,6 +47,6 @@ export const editJobThunk = async({jobId, job}, thunkAPI) => {
         thunkAPI.dispatch(clearValues())
         return resp.data
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.msg)
+        return checkForUnauthorizedResponse(error, thunkAPI);
     }
 }
