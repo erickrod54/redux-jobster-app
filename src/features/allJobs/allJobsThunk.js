@@ -1,17 +1,15 @@
 import authHeader from "../../utils/AuthHeader";
-import customFetch from "../../utils/axios";
+import customFetch, { checkForUnauthorizedResponse } from "../../utils/axios";
 
 
-/**Jobster app - version 11 - 'jobSlice' js - 
+/**Jobster app - version 13 - 'jobSlice' js - 
  * Features:
  * 
- *    --> Building 'getAllJobsThunk' request.
- * 
- *    --> Building 'showStatsThunk' request.  
+ *   --> Importing and setting check 401 for 'getAllJobsThunk',
+ *       and 'showStatsThunk'.
  *  
- * Note: building these request is part of simplifiying 
- * code for allJobsSlice.
- * 
+  Note: this way i will  'check 401' in every step of the
+ * user flow.
  */
 
 export const getAllJobsThunk = async(_,thunkAPI) => {
@@ -38,7 +36,7 @@ export const getAllJobsThunk = async(_,thunkAPI) => {
       console.log('all the jobs data ==>', resp.data)
       return resp.data
     } catch (error) {
-      return thunkAPI.rejectWithValue('There was an error')
+      return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
 
@@ -50,6 +48,6 @@ export const getAllJobsThunk = async(_,thunkAPI) => {
       console.log('this is the ShowStats result ==>',resp.data);
       return resp.data
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg)
+      return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
